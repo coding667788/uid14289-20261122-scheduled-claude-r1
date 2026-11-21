@@ -1,0 +1,28 @@
+{
+  "case_id": "sample_04_sync_gap",
+  "description": "版本 2 缺失时终端不能从 1 跳到 3：v3 先进入缓冲区，会话仍只持有 v1；声明 held_version=3 触发证据冲突。",
+  "center": {
+    "events": [
+      {"center_seq": 10, "logical_second": 100, "type": "roster_publication",
+       "version": 1, "changes": [{"device_id": "D1", "action": "disable"}]},
+      {"center_seq": 20, "logical_second": 110, "type": "roster_publication",
+       "version": 2, "changes": [{"device_id": "D1", "action": "restore"}]},
+      {"center_seq": 30, "logical_second": 120, "type": "roster_publication",
+       "version": 3, "changes": [{"device_id": "D1", "action": "disable"}]}
+    ]
+  },
+  "terminals": [
+    {
+      "terminal_id": "T1",
+      "records": [
+        {"terminal_id": "T1", "local_seq": 1, "type": "sync", "version": 1,
+         "center_seq_interval": [10, 12]},
+        {"terminal_id": "T1", "local_seq": 2, "type": "sync", "version": 3,
+         "center_seq_interval": [30, 30]},
+        {"terminal_id": "T1", "local_seq": 3, "type": "session", "session_id": "S1",
+         "held_version": 3, "device_id": "D1", "offline_deadline_second": 120,
+         "center_seq_interval": [30, 30]}
+      ]
+    }
+  ]
+}

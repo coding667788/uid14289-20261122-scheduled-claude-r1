@@ -1,0 +1,31 @@
+{
+  "case_id": "sample_02_same_second_order",
+  "description": "同一逻辑秒内中心序号决定顺序：D2 在 seq=11 被禁用，同秒内映射到 10 或 11 时 S1 裁定在合规与已撤销之间切换。",
+  "center": {
+    "events": [
+      {"center_seq": 10, "logical_second": 50, "type": "roster_publication",
+       "version": 1, "changes": [{"device_id": "D1", "action": "disable"}]},
+      {"center_seq": 11, "logical_second": 50, "type": "roster_publication",
+       "version": 2, "changes": [{"device_id": "D2", "action": "disable"}]},
+      {"center_seq": 12, "logical_second": 90, "type": "roster_publication",
+       "version": 3, "changes": [{"device_id": "D1", "action": "restore"}]}
+    ]
+  },
+  "terminals": [
+    {
+      "terminal_id": "T1",
+      "records": [
+        {"terminal_id": "T1", "local_seq": 1, "type": "sync", "version": 1,
+         "center_seq_interval": [10, 10]},
+        {"terminal_id": "T1", "local_seq": 2, "type": "session", "session_id": "S1",
+         "held_version": 1, "device_id": "D2", "offline_deadline_second": 90,
+         "center_seq_interval": [10, 11]},
+        {"terminal_id": "T1", "local_seq": 3, "type": "sync", "version": 2,
+         "center_seq_interval": [11, 11]},
+        {"terminal_id": "T1", "local_seq": 4, "type": "session", "session_id": "S2",
+         "held_version": 2, "device_id": "D2", "offline_deadline_second": 90,
+         "center_seq_interval": [11, 11]}
+      ]
+    }
+  ]
+}

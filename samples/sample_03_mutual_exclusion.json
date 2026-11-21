@@ -1,0 +1,39 @@
+{
+  "case_id": "sample_03_mutual_exclusion",
+  "description": "跨多会话不能同时犯规：S1 的唯一违规可能在晚段（时限失效），S2 的唯一违规可能在早段空洞（名册撤销）；单调链要求 t(S1)<=t(S2)。S1 若时限失效则 t(S1)>=50，D2 空洞已在 45 闭合，S2 必合规；S2 若落在 [30,44] 被撤销则 t(S1)<=44 也合规。逐条相加会错误得到 2，同一映射下最多 1。",
+  "center": {
+    "events": [
+      {"center_seq": 10, "logical_second": 100, "type": "roster_publication",
+       "version": 1, "changes": [{"device_id": "D1", "action": "disable"},
+                                 {"device_id": "D2", "action": "disable"}]},
+      {"center_seq": 20, "logical_second": 110, "type": "roster_publication",
+       "version": 2, "changes": [{"device_id": "D1", "action": "restore"},
+                                 {"device_id": "D2", "action": "restore"}]},
+      {"center_seq": 30, "logical_second": 120, "type": "roster_publication",
+       "version": 3, "changes": [{"device_id": "D2", "action": "disable"}]},
+      {"center_seq": 45, "logical_second": 135, "type": "roster_publication",
+       "version": 4, "changes": [{"device_id": "D2", "action": "restore"}]},
+      {"center_seq": 50, "logical_second": 140, "type": "roster_publication",
+       "version": 5, "changes": [{"device_id": "D3", "action": "disable"}]},
+      {"center_seq": 60, "logical_second": 150, "type": "roster_publication",
+       "version": 6, "changes": [{"device_id": "D3", "action": "restore"}]}
+    ]
+  },
+  "terminals": [
+    {
+      "terminal_id": "T1",
+      "records": [
+        {"terminal_id": "T1", "local_seq": 1, "type": "sync", "version": 1,
+         "center_seq_interval": [10, 10]},
+        {"terminal_id": "T1", "local_seq": 2, "type": "sync", "version": 2,
+         "center_seq_interval": [20, 20]},
+        {"terminal_id": "T1", "local_seq": 3, "type": "session", "session_id": "S1",
+         "held_version": 2, "device_id": "D1", "offline_deadline_second": 140,
+         "center_seq_interval": [20, 60]},
+        {"terminal_id": "T1", "local_seq": 4, "type": "session", "session_id": "S2",
+         "held_version": 2, "device_id": "D2", "offline_deadline_second": 150,
+         "center_seq_interval": [20, 59]}
+      ]
+    }
+  ]
+}

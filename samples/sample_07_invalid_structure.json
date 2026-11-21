@@ -1,0 +1,24 @@
+{
+  "case_id": "sample_07_invalid_structure",
+  "description": "故意构造的结构错误样例：版本缺号、未知设备引用、区间越界、重复本地序号、非法 action。",
+  "center": {
+    "events": [
+      {"center_seq": 10, "logical_second": 100, "type": "roster_publication",
+       "version": 1, "changes": [{"device_id": "D1", "action": "disable"}]},
+      {"center_seq": 20, "logical_second": 110, "type": "roster_publication",
+       "version": 3, "changes": [{"device_id": "D1", "action": "freeze"}]}
+    ]
+  },
+  "terminals": [
+    {
+      "terminal_id": "T1",
+      "records": [
+        {"terminal_id": "T1", "local_seq": 1, "type": "sync", "version": 1,
+         "center_seq_interval": [10, 10]},
+        {"terminal_id": "T1", "local_seq": 1, "type": "session", "session_id": "S1",
+         "held_version": 1, "device_id": "D9", "offline_deadline_second": 200,
+         "center_seq_interval": [5, 99]}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "case_id": "sample_05_retransmission",
+  "description": "重传幂等：已应用版本的重复投递记为 replay，不改变持有版本；台账跨运行累计 replay_count。",
+  "center": {
+    "events": [
+      {"center_seq": 10, "logical_second": 100, "type": "roster_publication",
+       "version": 1, "changes": [{"device_id": "D1", "action": "disable"}]},
+      {"center_seq": 20, "logical_second": 110, "type": "roster_publication",
+       "version": 2, "changes": [{"device_id": "D1", "action": "restore"}]}
+    ]
+  },
+  "terminals": [
+    {
+      "terminal_id": "T1",
+      "records": [
+        {"terminal_id": "T1", "local_seq": 1, "type": "sync", "version": 1,
+         "center_seq_interval": [10, 10]},
+        {"terminal_id": "T1", "local_seq": 2, "type": "sync", "version": 1,
+         "center_seq_interval": [10, 11]},
+        {"terminal_id": "T1", "local_seq": 3, "type": "sync", "version": 2,
+         "center_seq_interval": [20, 20]},
+        {"terminal_id": "T1", "local_seq": 4, "type": "session", "session_id": "S1",
+         "held_version": 2, "device_id": "D1", "offline_deadline_second": 110,
+         "center_seq_interval": [20, 20]}
+      ]
+    }
+  ]
+}
